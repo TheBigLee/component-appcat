@@ -1,0 +1,20 @@
+{
+  "template": "https://github.com/projectsyn/commodore-config-package-template.git",
+  "commit": "8dc31bcae98175d73858af0450d87e4e6e9c4751",
+  "checkout": "main",
+  "context": {
+    "cookiecutter": {
+      "name": "appcat",
+      "slug": "appcat",
+      "test_cases": "defaults",
+      "add_golden": "y",
+      "copyright_holder": "VSHN AG <info@vshn.ch>",
+      "copyright_year": "2023",
+      "github_owner": "vshn",
+      "__github_name": "component-appcat",
+      "__github_url": "https://github.com/vshn/component-appcat",
+      "_template": "https://github.com/projectsyn/commodore-config-package-template.git"
+    }
+  },
+  "directory": null
+}

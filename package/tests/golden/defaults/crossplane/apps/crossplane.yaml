@@ -1,0 +1,7 @@
+spec:
+  ignoreDifferences:
+    - group: rbac.authorization.k8s.io
+      jsonPointers:
+        - /rules
+      kind: ClusterRole
+      name: crossplane

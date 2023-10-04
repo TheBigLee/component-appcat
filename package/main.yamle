@@ -1,0 +1,70 @@
+applications:
+  - appcat
+  - crossplane
+
+parameters:
+  pkg.appcat:
+    componentVersion: package_appcat
+    image:
+      registry: ghcr.io
+      repository: vshn/appcat
+      tag: v4.33.0
+
+  components:
+    appcat:
+      url: https://github.com/vshn/component-appcat.git
+      version: ${pkg.appcat:componentVersion}
+      path: component
+    crossplane:
+      url: https://github.com/projectsyn/component-crossplane.git
+      version: v3.4.0
+
+  appcat:
+    images:
+      appcat:
+        registry: ${pkg.appcat:image:registry}
+        repository: ${pkg.appcat:image:repository}
+        tag: ${pkg.appcat:image:tag}
+    namespaceAnnotations:
+      openshift.io/node-selector: node-role.kubernetes.io/infra=
+    apiserver:
+      enabled: true
+      namespace: syn-appcat
+      env:
+        APPCAT_HANDLER_ENABLED: "true"
+
+  crossplane:
+    namespaceAnnotations:
+      openshift.io/node-selector: node-role.kubernetes.io/infra=
+    monitoring:
+      enabled: false
+    helmValues:
+      xfn:
+        enabled: true
+        securityContext:
+          seccompProfile: null
+          capabilities:
+            add: []
+        image:
+          repository: ${pkg.appcat:image:registry}/${pkg.appcat:image:repository}
+          tag: ${pkg.appcat:image:tag}
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 500m
+            memory: 128Mi
+        args:
+          - "grpc"
+      args:
+        - "--enable-environment-configs"
+        - "--enable-composition-functions"
+      rbacManager:
+        managementPolicy: Basic
+        resourcesCrossplane:
+          requests:
+            cpu: 10m
+        resourcesRBACManager:
+          requests:
+            cpu: 10m

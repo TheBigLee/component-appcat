@@ -1,0 +1,77 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: appcat-sliexporter-appcat-sli-exporter
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - vshn.appcat.vshn.io
+  resources:
+  - vshnpostgresqls
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - vshn.appcat.vshn.io
+  resources:
+  - vshnpostgresqls/status
+  verbs:
+  - get
+- apiGroups:
+  - vshn.appcat.vshn.io
+  resources:
+  - vshnredis
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - vshn.appcat.vshn.io
+  resources:
+  - vshnredis/status
+  verbs:
+  - get
+- apiGroups:
+  - vshn.appcat.vshn.io
+  resources:
+  - xvshnpostgresqls
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - vshn.appcat.vshn.io
+  resources:
+  - xvshnpostgresqls/status
+  verbs:
+  - get
+- apiGroups:
+  - vshn.appcat.vshn.io
+  resources:
+  - xvshnredis
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - vshn.appcat.vshn.io
+  resources:
+  - xvshnredis/status
+  verbs:
+  - get

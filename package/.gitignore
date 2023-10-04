@@ -1,0 +1,14 @@
+# Commodore
+/.cache/
+/compiled/
+/dependencies/
+/inventory/
+/vendor/
+/jsonnetfile.json
+/jsonnetfile.lock.json
+
+# Antora
+/_archive/
+/_public/
+
+# Additional entries
