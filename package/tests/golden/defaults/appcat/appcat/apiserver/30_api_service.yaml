@@ -1,0 +1,17 @@
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: syn-appcat/apiserver-certificate
+  labels:
+    api: appcat
+    apiserver: 'true'
+  name: v1.api.appcat.vshn.io
+spec:
+  group: api.appcat.vshn.io
+  groupPriorityMinimum: 2000
+  service:
+    name: appcat
+    namespace: syn-appcat
+  version: v1
+  versionPriority: 10

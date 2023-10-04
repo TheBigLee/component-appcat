@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations: {}
+  labels:
+    authorization.openshift.io/aggregate-to-basic-user: 'true'
+    name: system-x-fake-distribution-aggregate-appcat-to-basic-user
+  name: system:x-fake-distribution:aggregate-appcat-to-basic-user
+rules:
+  - apiGroups:
+      - api.appcat.vshn.io
+    resources:
+      - appcats
+    verbs:
+      - get
+      - list
+      - watch

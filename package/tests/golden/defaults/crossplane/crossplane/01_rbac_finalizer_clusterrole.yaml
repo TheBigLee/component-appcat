@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations: {}
+  labels:
+    name: crossplane-rbac-manager-finalizer
+  name: crossplane-rbac-manager:finalizer
+rules:
+  - apiGroups:
+      - pkg.crossplane.io
+      - apiextensions.crossplane.io
+    resources:
+      - '*/finalizers'
+    verbs:
+      - '*'
