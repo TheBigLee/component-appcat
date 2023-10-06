@@ -3,7 +3,7 @@ applications:
   - crossplane
 parameters:
   pkg.appcat:
-    componentVersion: package_appcat
+    componentVersion: '${GITHUB_REF#refs/*/} '
     image:
       registry: ghcr.io
       repository: vshn/appcat
