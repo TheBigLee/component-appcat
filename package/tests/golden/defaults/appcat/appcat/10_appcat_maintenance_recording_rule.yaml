@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations: {}
+  labels:
+    name: appcat-maintenance
+  name: appcat-maintenance
+  namespace: syn-appcat
+spec:
+  groups:
+    - name: appcat-cluster-maintenance
+      rules:
+        - expr: max(max_over_time(openshift_upgrade_controller_upgradejob_state{state="active"}[10m]))
+            or vector(0)
+          record: appcat:cluster:maintenance

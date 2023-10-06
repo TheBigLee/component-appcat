@@ -1,0 +1,25 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: apiserver-certificate
+  namespace: syn-appcat
+spec:
+  dnsNames:
+    - appcat.syn-appcat.svc
+  duration: 87600h0m0s
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: api-server-issuer
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 4096
+  renewBefore: 2400h0m0s
+  secretName: appcat-apiserver-tls
+  subject:
+    organizations:
+      - vshn-appcat
+  usages:
+    - server auth
+    - client auth

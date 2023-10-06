@@ -9,12 +9,18 @@
   ],
   "postUpgradeTasks": {
     "commands": [
-      "make gen-golden-all"
+      "make -C component gen-golden-all",
+      "make -C package gen-golden-all"
     ],
-    "fileFilters": [ "tests/golden/**" ],
+    "fileFilters": [
+      "component/tests/golden/**",
+      "package/tests/golden/**"
+    ],
     "executionMode": "update"
   },
-  "suppressNotifications": [ "artifactErrors" ],
+  "suppressNotifications": [
+    "artifactErrors"
+  ],
   "labels": [
     "dependency"
   ]

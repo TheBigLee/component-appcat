@@ -1,0 +1,8 @@
+# Include this class only on test clusters
+classes:
+  - .main
+
+parameters:
+  components:
+    appcat:
+      version: package_appcat

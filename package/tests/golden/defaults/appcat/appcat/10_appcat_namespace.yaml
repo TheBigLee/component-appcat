@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    openshift.io/node-selector: node-role.kubernetes.io/infra=
+  labels:
+    name: syn-appcat
+    openshift.io/cluster-monitoring: 'true'
+  name: syn-appcat

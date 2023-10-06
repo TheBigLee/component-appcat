@@ -8,15 +8,28 @@
 .kind
 .idea
 
-# jsonnet builder
-component/jsonnetfile.json
-
-compiled/
-vendor/
-dependencies/
-hack/
-
 # sloth artifacts
 sloth-*-*-*
 sloth-input/
 sloth-output/
+
+# Commodore
+/component/.cache
+/component/dependencies
+/component/helmcharts
+/component/manifests
+/component/vendor
+/component/jsonnetfile.lock.json
+/component/crds
+/component/compiled
+
+/package/.cache
+/package/dependencies
+/package/helmcharts
+/package/manifests
+/package/vendor
+/package/jsonnetfile.lock.json
+/package/crds
+/package/compiled
+
+# Additional entries

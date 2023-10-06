@@ -1,0 +1,187 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: crossplane
+    app.kubernetes.io/component: cloud-infrastructure-controller
+    app.kubernetes.io/instance: crossplane
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: crossplane
+    app.kubernetes.io/part-of: crossplane
+    app.kubernetes.io/version: 1.12.2
+    helm.sh/chart: crossplane-1.12.2
+    release: crossplane
+  name: crossplane
+  namespace: syn-crossplane
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crossplane
+      release: crossplane
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: crossplane
+        app.kubernetes.io/component: cloud-infrastructure-controller
+        app.kubernetes.io/instance: crossplane
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: crossplane
+        app.kubernetes.io/part-of: crossplane
+        app.kubernetes.io/version: 1.12.2
+        helm.sh/chart: crossplane-1.12.2
+        release: crossplane
+    spec:
+      containers:
+        - args:
+            - core
+            - start
+            - --enable-environment-configs
+            - --enable-composition-functions
+          env:
+            - name: GOMAXPROCS
+              valueFrom:
+                resourceFieldRef:
+                  containerName: crossplane
+                  resource: limits.cpu
+            - name: GOMEMLIMIT
+              valueFrom:
+                resourceFieldRef:
+                  containerName: crossplane
+                  resource: limits.memory
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: LEADER_ELECTION
+              value: 'true'
+            - name: WEBHOOK_TLS_SECRET_NAME
+              value: webhook-tls-secret
+            - name: WEBHOOK_TLS_CERT_DIR
+              value: /webhook/tls
+          image: docker.io/crossplane/crossplane:v1.12.2
+          imagePullPolicy: IfNotPresent
+          name: crossplane
+          ports:
+            - containerPort: 9443
+              name: webhooks
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+            requests:
+              cpu: 500m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 65532
+            runAsUser: 65532
+          volumeMounts:
+            - mountPath: /cache
+              name: package-cache
+            - mountPath: /webhook/tls
+              name: webhook-tls-secret
+        - args:
+            - start
+            - grpc
+          env:
+            - name: GOMAXPROCS
+              valueFrom:
+                resourceFieldRef:
+                  containerName: crossplane
+                  resource: limits.cpu
+            - name: GOMEMLIMIT
+              valueFrom:
+                resourceFieldRef:
+                  containerName: crossplane
+                  resource: limits.memory
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          image: ghcr.io/vshn/appcat:v4.33.0
+          imagePullPolicy: IfNotPresent
+          name: crossplane-xfn
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add: []
+            readOnlyRootFilesystem: true
+            runAsGroup: 65532
+            runAsUser: 65532
+          volumeMounts:
+            - mountPath: /xfn
+              name: xfn-cache
+      hostNetwork: false
+      initContainers:
+        - args:
+            - core
+            - init
+          env:
+            - name: GOMAXPROCS
+              valueFrom:
+                resourceFieldRef:
+                  containerName: crossplane-init
+                  resource: limits.cpu
+            - name: GOMEMLIMIT
+              valueFrom:
+                resourceFieldRef:
+                  containerName: crossplane-init
+                  resource: limits.memory
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_SERVICE_ACCOUNT
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.serviceAccountName
+            - name: WEBHOOK_TLS_SECRET_NAME
+              value: webhook-tls-secret
+            - name: WEBHOOK_SERVICE_NAME
+              value: crossplane-webhooks
+            - name: WEBHOOK_SERVICE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: WEBHOOK_SERVICE_PORT
+              value: '9443'
+          image: docker.io/crossplane/crossplane:v1.12.2
+          imagePullPolicy: IfNotPresent
+          name: crossplane-init
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+            requests:
+              cpu: 500m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 65532
+            runAsUser: 65532
+      securityContext: {}
+      serviceAccountName: crossplane
+      volumes:
+        - emptyDir:
+            medium: null
+            sizeLimit: 20Mi
+          name: package-cache
+        - emptyDir:
+            medium: null
+            sizeLimit: 1Gi
+          name: xfn-cache
+        - name: webhook-tls-secret
+          secret:
+            secretName: webhook-tls-secret

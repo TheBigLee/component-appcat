@@ -1,0 +1,85 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations: {}
+  labels:
+    name: appcat-billing
+  name: appcat-billing
+  namespace: syn-appcat
+spec:
+  groups:
+    - name: appcat-billing-rules
+      rules:
+        - expr: |
+            sum by (label_appcat_vshn_io_claim_namespace,label_appcat_vshn_io_sla,product,provider,architecture, category, claim_namespace,tenant_id) (
+            # Sum values over one hour and get mean
+            sum_over_time(
+              # Udpate label product: $product:$provider:$tenant_id:$claim_namespace:$architecture
+              label_join(
+                # Add label category: $provider:$claim_namespace
+                label_join(
+                  # Add label architecture: $SLA, where $SLA is the content of label appcat.vshn.io/sla
+                  label_replace(
+                    # Add label provider: vshn
+                    label_replace(
+                      # Add label product: postgres
+                      label_replace(
+                        # Default appcat.vshn.io/sla to besteffort if it is not set
+                        label_replace(
+                          # Copy label appcat.vshn.io/namespace to label claim_namespace
+                          label_replace(
+                            # Populate tenant_id
+                            label_replace(
+                              # Fetch all namespaces with label label_appuio_io_billing_name=~"appcat-.+"
+                              kube_namespace_labels{ label_appuio_io_billing_name=~"appcat-.+"} *
+                              on (namespace) group_right(label_appuio_io_organization,label_appcat_vshn_io_claim_namespace,label_appcat_vshn_io_sla, label_appuio_io_billing_name)
+                              kube_pod_info{created_by_kind!="Job"},
+                              "tenant_id",
+            "t-silent-test-1234",
+            "",
+            ""
+
+                            ),
+                            "claim_namespace",
+                            "$1",
+                            "label_appcat_vshn_io_claim_namespace",
+                            "(.*)"
+                          ),
+                          "label_appcat_vshn_io_sla",
+                          "besteffort",
+                          "label_appcat_vshn_io_sla",
+                          "^$"
+                        ),
+                        "product",
+                        "appcat_$1",
+                        "label_appuio_io_billing_name",
+                        "appcat-(.+)"
+                      ),
+                      "provider",
+                      "vshn",
+                      "",
+                      ""
+                    ),
+                    "sla",
+                    "$1",
+                    "label_appcat_vshn_io_sla",
+                    "(.*)"
+                  ),
+                  "category",
+                  ":",
+                  "provider",
+                  "claim_namespace"
+                ),
+                "product",
+                ":",
+                "product",
+                "provider",
+                "tenant_id",
+                "claim_namespace",
+                "sla"
+              # other billing queries have [59m:1m] here. This is due to some
+              # obscure discrepancies between how the cloud-reporting evaluates the query
+              # and how the GUI/recording rules evaluate the query.
+              )[60m:1m]
+            )/60 )
+          record: appcat:billing

@@ -33,7 +33,7 @@ parameters:
         output_path: .
       - input_type: external
         input_paths:
-          - appcat/run-sloth
+          - ${_base_directory}/run-sloth
         output_path: .
         env_vars:
           SLOTH_VERSION: ${appcat:images:sloth:tag}
@@ -43,7 +43,6 @@ parameters:
           - ${_base_directory}/sloth-input
           - -o
           - ${_base_directory}/sloth-output
-
 
       - input_paths:
           - ${_base_directory}/component/main.jsonnet
@@ -85,7 +84,6 @@ parameters:
           - ${_base_directory}/component/appcat_sla_reporter.jsonnet
         input_type: jsonnet
         output_path: appcat/sla_reporter
-
 
       - input_paths:
           - ${_base_directory}/sloth-input

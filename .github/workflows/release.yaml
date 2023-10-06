@@ -30,3 +30,16 @@ jobs:
           # Ensure target branch for release is "master"
           commit: master
           token: ${{ secrets.GITHUB_TOKEN }}
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 'master'
+      - name: Change version in package
+        run: |
+          yq -i '.parameters."pkg.appcat".componentVersion = "${GITHUB_REF#refs/*/} "' package/main.yaml
+      - uses: EndBug/add-and-commit@v7
+        with:
+          default_author: user_info
+          message: "Update component version in package to ${GITHUB_REF#refs/*/}"
