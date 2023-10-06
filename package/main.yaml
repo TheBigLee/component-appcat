@@ -3,7 +3,7 @@ applications:
   - crossplane
 parameters:
   pkg.appcat:
-    componentVersion: 'v2.0.9 '
+    componentVersion: v2.0.10
     image:
       registry: ghcr.io
       repository: vshn/appcat
@@ -52,10 +52,10 @@ parameters:
             cpu: 500m
             memory: 128Mi
         args:
-          - "grpc"
+          - grpc
       args:
-        - "--enable-environment-configs"
-        - "--enable-composition-functions"
+        - --enable-environment-configs
+        - --enable-composition-functions
       rbacManager:
         managementPolicy: Basic
         resourcesCrossplane:
