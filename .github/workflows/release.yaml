@@ -34,10 +34,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: 'master'
       - name: Change version in package
         run: |
-          sed -i "s/componentVersion: .*/componentVersion: ${{ github.ref }}/g" package/main.yaml
+          yq -i '.parameters."pkg.appcat".componentVersion = "${GITHUB_REF#refs/*/} "' package/main.yaml
       - uses: EndBug/add-and-commit@v7
         with:
           default_author: user_info
-          message: "Update component version in package to ${{ github.ref }}"
+          message: "Update component version in package to ${GITHUB_REF#refs/*/}"
