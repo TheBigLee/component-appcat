@@ -39,7 +39,8 @@ jobs:
       - name: Change version in package
         run: |
           yq -i '.parameters."pkg.appcat".componentVersion = "${GITHUB_REF#refs/*/} "' package/main.yaml
-      - uses: EndBug/add-and-commit@v7
+      - uses: actions-js/pushv1.4
         with:
-          default_author: user_info
-          message: "Update component version in package to ${GITHUB_REF#refs/*/}"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          message: "Update component version in package to ${{ GITHUB_REF#refs/*/ }}"
+          branch: 'master'
