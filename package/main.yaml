@@ -10,7 +10,7 @@ parameters:
       tag: v4.33.0
   components:
     appcat:
-      url: https://github.com/vshn/component-appcat.git
+      url: https://github.com/TheBigLee/component-appcat.git
       version: ${pkg.appcat:componentVersion}
       path: component
     crossplane:
