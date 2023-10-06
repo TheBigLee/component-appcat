@@ -39,7 +39,7 @@ jobs:
       - name: Change version in package
         run: |
           yq -i '.parameters."pkg.appcat".componentVersion = "${GITHUB_REF#refs/*/} "' package/main.yaml
-      - uses: actions-js/pushv1.4
+      - uses: actions-js/push@v1.4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           message: "Update component version in package to ${{ GITHUB_REF#refs/*/ }}"
